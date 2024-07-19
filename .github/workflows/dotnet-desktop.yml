@@ -18,11 +18,11 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Restore dependencies
-      working-directory: ./ConsoleTelegaBot2
+      working-directory: ./
       run: dotnet restore
     - name: Build
-      working-directory: ./ConsoleTelegaBot2
+      working-directory: ./
       run: dotnet build --no-restore
     - name: Dotnet Publish
-      working-directory: ./ConsoleTelegaBot2
+      working-directory: ./
       run: dotnet publish -c Release -o deploy
