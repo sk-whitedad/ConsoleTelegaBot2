@@ -26,3 +26,10 @@ jobs:
     - name: Dotnet Publish
       working-directory: ./
       run: dotnet publish -c Release -o deploy
+    - name: Run SSH command 0
+      uses: garygrossgarten/github-action-ssh@v0.3.0
+      with:
+        command: sudo chown -R admin:www /home/www/
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
