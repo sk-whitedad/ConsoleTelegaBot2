@@ -1,39 +1,28 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
-# built on .NET Core.
-# To learn how to migrate your existing application to .NET Core,
-# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
+# 1. Настройте переменные среды
+# GitHub устанавливает переменные среды по умолчанию для каждого запуска рабочего процесса.
+# Замените переменные, относящиеся к вашему проекту, в разделе «env» ниже.
 #
-# To configure this workflow:
+# 2. Подписание
+# Создайте сертификат подписи в приложении Windows.
+# Проект упаковки или добавьте в проект существующий сертификат подписи.
+# Далее используйте PowerShell для кодирования файла .pfx с использованием кодировки Base64.
+# запустив следующий скрипт Powershell для генерации выходной строки:
 #
-# 1. Configure environment variables
-# GitHub sets default environment variables for every workflow run.
-# Replace the variables relative to your project in the "env" section below.
+# $pfx_cert = Get-Content '.\SigningCertificate.pfx' - Байт кодирования
+# [System.Convert]::ToBase64String($pfx_cert) | Исходящий файл SigningCertificate_Encoded.txt
 #
-# 2. Signing
-# Generate a signing certificate in the Windows Application
-# Packaging Project or add an existing signing certificate to the project.
-# Next, use PowerShell to encode the .pfx file using Base64 encoding
-# by running the following Powershell script to generate the output string:
+# Откройте выходной файл SigningCertificate_Encoded.txt и скопируйте
+# строка внутри. Затем добавьте строку в репозиторий как секрет GitHub.
+# и назовите его «Base64_Encoded_Pfx».
+# Для получения дополнительной информации о том, как настроить сертификат подписи для
+# этот рабочий процесс см. на https://github.com/microsoft/github-actions-for-desktop-apps#signing
 #
-# $pfx_cert = Get-Content '.\SigningCertificate.pfx' -Encoding Byte
-# [System.Convert]::ToBase64String($pfx_cert) | Out-File 'SigningCertificate_Encoded.txt'
+# Наконец, добавьте пароль сертификата подписи в репозиторий в качестве секрета и назовите его «Pfx_Key».
+# См. раздел «Создание проекта упаковки приложений Windows» ниже, чтобы узнать, как используется секрет.
 #
-# Open the output file, SigningCertificate_Encoded.txt, and copy the
-# string inside. Then, add the string to the repo as a GitHub secret
-# and name it "Base64_Encoded_Pfx."
-# For more information on how to configure your signing certificate for
-# this workflow, refer to https://github.com/microsoft/github-actions-for-desktop-apps#signing
-#
-# Finally, add the signing certificate password to the repo as a secret and name it "Pfx_Key".
-# See "Build the Windows Application Packaging project" below to see how the secret is used.
-#
-# For more information on GitHub Actions, refer to https://github.com/features/actions
-# For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
+# Для получения дополнительной информации о действиях GitHub см. https://github.com/features/actions.
+# Чтобы получить полный пример CI/CD для начала работы с рабочими процессами GitHub Action для настольных приложений,
+# обратитесь к https://github.com/microsoft/github-actions-for-desktop-appsop Applications,
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
 name: .NET Core Desktop
@@ -52,14 +41,14 @@ jobs:
       matrix:
         configuration: [Debug, Release]
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
+    runs-on: windows-latest  # Список доступных типов направляющих см.
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
-      Solution_Name: your-solution-name                         # Replace with your solution name, i.e. MyWpfApp.sln.
-      Test_Project_Path: your-test-project-path                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
-      Wap_Project_Directory: your-wap-project-directory-name    # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: your-wap-project-path                   # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      Solution_Name: ConsoleTelegaBot2                          # Замените на имя вашего решения, i.e. MyWpfApp.sln.
+      Test_Project_Path: your-test-project-path                 # Замените на путь к вашему тестовому проекту., i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
+      Wap_Project_Directory: your-wap-project-directory-name    # Замените каталогом проекта Wap относительно решения., i.e. MyWpfApp.Package.
+      Wap_Project_Path: your-wap-project-path                   # Замените на путь к вашему Wap-проекту., i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
     - name: Checkout
@@ -67,34 +56,34 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Install the .NET Core workload
+    # Установите рабочую нагрузку .NET Core.
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 7.0.x
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    # Добавьте MSBuild в PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
-    # Execute all unit tests in the solution
+    # Выполнить все модульные тесты в решении.
     - name: Execute unit tests
       run: dotnet test
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    # Восстановите приложение, чтобы заполнить папку obj идентификаторами RuntimeIdentifiers.
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
 
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
+    # Декодируйте PFX в кодировке Base 64 и сохраните Signing_Certificate.
     - name: Decode the pfx
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
         $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx
         [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
-    # Create the app package by building and packaging the Windows Application Packaging project
+    # Создайте пакет приложения, создав и упаковав проект упаковки приложений Windows.
     - name: Create the app package
       run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
       env:
@@ -103,11 +92,11 @@ jobs:
         Appx_Package_Build_Mode: StoreUpload
         Configuration: ${{ matrix.configuration }}
 
-    # Remove the pfx
+    # Удалить PFX
     - name: Remove the pfx
       run: Remove-Item -path $env:Wap_Project_Directory\GitHubActionsWorkflow.pfx
 
-    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
+    # Загрузите пакет MSIX: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
