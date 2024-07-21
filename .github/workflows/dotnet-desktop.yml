@@ -24,5 +24,8 @@ jobs:
       run: dotnet build --no-restore # Сборка проекта (без неявного восстановления)
       
     - name: Dotnet Publish
-      run: dotnet publish -c Release -o deploy
+      run: dotnet publish -c Release -o deploy  # Публикация приложения в папку deploy
+
+    - name: Test
+      run: dotnet test
   
