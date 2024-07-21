@@ -32,6 +32,7 @@ jobs:
         command: sudo chown -R www:www /home/www
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSPHRASE }}
         privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
 
     env:
