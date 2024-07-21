@@ -34,6 +34,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
 
-
+    env:
+        CI: true
 
       
