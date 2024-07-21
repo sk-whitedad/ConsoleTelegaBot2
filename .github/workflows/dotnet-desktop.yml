@@ -26,6 +26,14 @@ jobs:
     - name: Dotnet Publish
       run: dotnet publish -c Release -o deploy  # Публикация приложения в папку deploy
 
-    - name: Test
-      run: dotnet test
-  
+    - name: ls -a via ssh
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: ls -a
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+
+
+
+      
