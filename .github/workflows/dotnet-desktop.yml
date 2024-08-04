@@ -26,7 +26,9 @@ jobs:
     - name: Dotnet Publish
       run: dotnet publish -c Release -o deploy  # Публикация приложения в папку deploy
 
-    - name: Preview Dir
+    - name: Go Dir
+      run: cd deploy
+    - name: Preview Dir   
       run: ls -l
 
     - name: Run ssh comand 0
@@ -38,8 +40,4 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         passphrase: ${{ secrets.PASSPHRASE }}
         privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    env:
-        CI: true
-
       
