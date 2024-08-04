@@ -26,9 +26,8 @@ jobs:
     - name: Dotnet Publish
       run: dotnet publish -c Release -o deploy  # Публикация приложения в папку deploy
 
-    - name: Go Dir
-      run: cd deploy
-    - name: Preview Dir   
+    - name: Preview Dir 
+      working-directory: ./deploy
       run: ls -l
 
     - name: Run ssh comand 0
@@ -40,4 +39,11 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         passphrase: ${{ secrets.PASSPHRASE }}
         privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-      
+
+    - name: Run SSH command 1
+      uses: garygrossgarten/github-action-ssh@v0.3.0
+      with:
+        command: sudo chown -R www:admin /home/www/
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
