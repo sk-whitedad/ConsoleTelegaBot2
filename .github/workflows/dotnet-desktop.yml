@@ -43,14 +43,12 @@ jobs:
     - name: Copy via ssh
       uses: garygrossgarten/github-action-scp@release
       with:
-        local: deploy
+        local: deploy/ConsoleTelegramBot2.dll
         remote: ${{ secrets.REMOTE_TARGET }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-        concurrency: 4
-        atomicPut: true
-        recursive: true
+        concurrency: 1
         dotfiles: true
 
     - name: Run SSH command 1
