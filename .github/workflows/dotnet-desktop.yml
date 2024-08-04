@@ -48,8 +48,6 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-        concurrency: 1
-        dotfiles: true
 
     - name: Run SSH command 1
       uses: garygrossgarten/github-action-ssh@release
