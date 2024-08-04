@@ -48,9 +48,9 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-        concurrency: 4
-        atomicPut: false
-
+        concurrency: 1
+        rmRemote: true
+        recursive: true
 
     - name: Run SSH command 1
       uses: garygrossgarten/github-action-ssh@v0.3.0
