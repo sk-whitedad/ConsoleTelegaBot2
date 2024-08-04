@@ -43,11 +43,11 @@ jobs:
     - name: Copy via ssh
       uses: appleboy/scp-action@v0.1.7
       with:
-        source: deploy/ConsoleTelegaBot2.dll
-        target: ${{ secrets.REMOTE_TARGET }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source: deploy/*
+        target: ${{ secrets.REMOTE_TARGET }}
 
     - name: Run SSH command 1
       uses: garygrossgarten/github-action-ssh@release
