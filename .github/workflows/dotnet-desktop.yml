@@ -41,13 +41,13 @@ jobs:
         privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Copy via ssh
-      uses: garygrossgarten/github-action-scp@release
+      uses: appleboy/scp-action@v0.1.7
       with:
-        local: deploy/ConsoleTelegaBot2.dll
-        remote: ${{ secrets.REMOTE_TARGET }}
+        source: deploy/ConsoleTelegaBot2.dll
+        target: ${{ secrets.REMOTE_TARGET }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Run SSH command 1
       uses: garygrossgarten/github-action-ssh@release
